@@ -5,3 +5,4 @@ sqlalchemy
 selenium
 webdriver-manager
 python-dotenv
+pymysql
