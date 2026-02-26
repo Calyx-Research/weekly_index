@@ -21,7 +21,7 @@ import os
 load_dotenv() # This loads the variables from .env
 
 USER = os.getenv("USER")
-PASSWORD = os.getenv("PASSWORD")
+PASSWORD = os.getenv("DB_PASSWORD")
 HOST = os.getenv("HOST")
 PORT = os.getenv("PORT")
 DB_NAME = os.getenv("DB_NAME")
