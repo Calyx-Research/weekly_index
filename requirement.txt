@@ -1,0 +1,7 @@
+pdfplumber
+pandas
+requests
+sqlalchemy
+selenium
+webdriver-manager
+python-dotenv
