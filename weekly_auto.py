@@ -23,11 +23,11 @@ load_dotenv() # This loads the variables from .env
 USER = os.getenv("USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 HOST = os.getenv("HOST")
-PORT = os.getenv("PORT")
+DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
 
 safe_password = urllib.parse.quote_plus(DB_PASSWORD)
-connection_uri = f"mysql+pymysql://{USER}:{safe_password}@{HOST}:{PORT}/{DB_NAME}"
+connection_uri = f"mysql+pymysql://{USER}:{safe_password}@{HOST}:{DB_PORT}/{DB_NAME}"
 engine = create_engine(connection_uri)
 
 # =========================
