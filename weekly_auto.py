@@ -1,3 +1,4 @@
+import sys
 import time
 import re
 import pdfplumber
@@ -147,8 +148,16 @@ def upload_market_index(df: pd.DataFrame):
 # 3️⃣ Execution
 # =========================
 if __name__ == "__main__":
-    # To run for a specific past date, use: download_and_extract_report("20-02-2026")
-    raw_df = download_and_extract_report("06-02-2026") 
+    # Check if a date was passed as an argument: python scraper.py DD-MM-YYYY
+    if len(sys.argv) > 1:
+        manual_date = sys.argv[1]
+        print(f"[*] Manual override: Running for date {manual_date}")
+        raw_df = download_and_extract_report(manual_date)
+    else:
+        # Default behavior: Run for today
+        raw_df = download_and_extract_report("06-02-2026") 
     
-    if raw_df is not None:
+    if raw_df is not None and not raw_df.empty:
         upload_market_index(raw_df)
+    else:
+        print("[!] Execution finished with no data to upload.")

@@ -1,0 +1,61 @@
+name: NGX Market Scraper Automation
+
+on:
+  # 1. Automatic Schedule: Runs every Friday at 6:00 PM UTC
+  schedule:
+    - cron: '0 18 * * 5'
+  
+  # 2. Manual Trigger: Allows you to run from the "Actions" tab
+  workflow_dispatch:
+    inputs:
+      target_date:
+        description: 'Date to scrape (Format: DD-MM-YYYY). Leave blank for current date.'
+        required: false
+        default: ''
+
+jobs:
+  scrape_and_upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      # --- Setup Environment ---
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip' # Speeds up future runs
+
+      - name: Install Chrome Browser
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # --- Execute Scraper ---
+      - name: Run Scraper Script
+        env:
+          # Mapping GitHub Secrets to Environment Variables
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          # Pass the manual date input as an argument to the python script
+          python weekly_auto.py ${{ github.event.inputs.target_date }}
+
+      # --- Optional: Upload Log Artifact ---
+      - name: Save Downloaded PDF (Optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-reports
+          path: "*.pdf"
+          retention-days: 5
