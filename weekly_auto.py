@@ -27,7 +27,7 @@ DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
 
 safe_password = urllib.parse.quote_plus(DB_PASSWORD)
-connection_uri = f"mysql+pymysql://{USER}:{safe_password}@{HOST}:{DB_PORT}/{DB_NAME}"
+connection_uri = f"mysql+pymysql://{DB_USER}:{safe_password}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 engine = create_engine(connection_uri)
 
 # =========================
