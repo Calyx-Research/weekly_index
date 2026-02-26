@@ -156,7 +156,7 @@ if __name__ == "__main__":
         raw_df = download_and_extract_report(manual_date)
     else:
         # Default behavior: Run for today
-        raw_df = download_and_extract_report("06-02-2026") 
+        raw_df = download_and_extract_report() 
     
     if raw_df is not None and not raw_df.empty:
         upload_market_index(raw_df)
