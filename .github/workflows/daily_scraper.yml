@@ -1,11 +1,11 @@
 name: NGX Market Scraper Automation
 
 on:
-  # 1. Automatic Schedule: Runs every Friday at 6:00 PM UTC
+  # Runs every Monday at 8:00 AM Nigeria time (WAT) = 07:00 UTC
   schedule:
-    - cron: '0 18 * * 5'
+    - cron: '0 7 * * 1'
   
-  # 2. Manual Trigger: Allows you to run from the "Actions" tab
+  # Manual trigger
   workflow_dispatch:
     inputs:
       target_date:
@@ -26,7 +26,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-          cache: 'pip' # Speeds up future runs
+          cache: 'pip'
 
       - name: Install Chrome Browser
         run: |
@@ -41,14 +41,12 @@ jobs:
       # --- Execute Scraper ---
       - name: Run Scraper Script
         env:
-          # Mapping GitHub Secrets to Environment Variables
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_PORT: ${{ secrets.DB_PORT }}
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
-          # Pass the manual date input as an argument to the python script
           python weekly_auto.py ${{ github.event.inputs.target_date }}
 
       # --- Optional: Upload Log Artifact ---
