@@ -1,10 +1,11 @@
+
 name: NGX Market Scraper Automation
 
 on:
   # Runs every Monday at 8:00 AM Nigeria time (WAT) = 07:00 UTC
   schedule:
     - cron: '0 7 * * 1'
-  
+
   # Manual trigger
   workflow_dispatch:
     inputs:
@@ -15,7 +16,7 @@ on:
 
 jobs:
   scrape_and_upload:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       # --- Setup Environment ---
@@ -47,7 +48,11 @@ jobs:
           DB_PORT: ${{ secrets.DB_PORT }}
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
-          python weekly_auto.py ${{ github.event.inputs.target_date }}
+          if [ -n "${{ github.event.inputs.target_date }}" ]; then
+            python weekly_auto.py "${{ github.event.inputs.target_date }}"
+          else
+            python weekly_auto.py
+          fi
 
       # --- Optional: Upload Log Artifact ---
       - name: Save Downloaded PDF (Optional)
@@ -57,3 +62,4 @@ jobs:
           name: market-reports
           path: "*.pdf"
           retention-days: 5
+          if-no-files-found: warn
